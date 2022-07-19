@@ -1,19 +1,26 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useClickAway } from "react-use";
 
 import { Button, Container } from "./Select.style";
 import SelectProvider from "../../context/select";
 import type { Option } from "../../types/select";
 import { SelectOption } from "./SelectOption";
+import { useControlled } from "../../hooks";
 
 interface Props {
+  onSelect: (selectedValue: Option | undefined) => void;
+  value?: Option;
+  defaultValue?: Option;
   children?: React.ReactNode;
 }
 
 const Select: React.FC<Props> & {
   Option: typeof SelectOption;
-} = ({ children }) => {
-  const [selectedValue, setSelectedValue] = useState<Option>();
+} = ({ value, defaultValue, onSelect, children }) => {
+  const [selectedValue, setSelectedValue] = useControlled<Option | undefined>({
+    controlled: value,
+    default: defaultValue,
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   const ref = useRef(null);
@@ -21,10 +28,14 @@ const Select: React.FC<Props> & {
     setIsOpen(false);
   });
 
-  const handleSelected = (selectedItem: Option) => {
-    setSelectedValue(selectedItem);
+  const handleSelected = (selectedOption: Option) => {
+    setSelectedValue(selectedOption);
     setIsOpen(false);
   };
+
+  useEffect(() => {
+    onSelect?.(selectedValue);
+  }, [selectedValue]);
 
   return (
     <Container ref={ref}>
@@ -43,22 +54,6 @@ const Select: React.FC<Props> & {
   );
 };
 
-// Select.Option = [];
 Select.Option = SelectOption;
 
 export default Select;
-
-const options: Option[] = [
-  {
-    label: "hello",
-    value: "hello",
-  },
-  {
-    label: "hi",
-    value: "hi",
-  },
-  {
-    label: "안뇽",
-    value: "안뇽",
-  },
-];

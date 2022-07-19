@@ -5,7 +5,6 @@ import type { Option } from "../../types/select";
 interface ContextValue {
   selectedValue: Option | undefined;
   handleSelected: (option: Option) => void;
-  // setSelectedValue: SetStateType<Option | undefined>;
 }
 
 interface Props extends ContextValue {
@@ -18,12 +17,7 @@ const SelectContext: React.Context<ContextValue> = createContext({
   // setSelectedValue: () => {},
 } as any);
 
-const SelectProvider = ({
-  selectedValue,
-  handleSelected,
-  // setSelectedValue,
-  children,
-}: Props) => {
+const SelectProvider = ({ selectedValue, handleSelected, children }: Props) => {
   const value = useMemo(
     () => ({ selectedValue, handleSelected }),
     [selectedValue, handleSelected]
