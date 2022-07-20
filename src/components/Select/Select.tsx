@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useClickAway } from "react-use";
+import { v4 as uuid } from "uuid";
 
 import { Button, Container } from "./Select.style";
 import SelectProvider from "../../context/select";
@@ -17,6 +18,7 @@ interface Props {
 const Select: React.FC<Props> & {
   Option: typeof SelectOption;
 } = ({ value, defaultValue, onSelect, children }) => {
+  const [id] = useState(() => uuid());
   const [selectedValue, setSelectedValue] = useControlled<Option | undefined>({
     controlled: value,
     default: defaultValue,
@@ -30,18 +32,27 @@ const Select: React.FC<Props> & {
 
   const handleSelected = (selectedOption: Option) => {
     setSelectedValue(selectedOption);
+    onSelect?.(selectedOption);
     setIsOpen(false);
   };
 
-  useEffect(() => {
-    onSelect?.(selectedValue);
-  }, [selectedValue]);
-
   return (
     <Container ref={ref}>
-      <Button onClick={() => setIsOpen(true)}>{selectedValue?.label}</Button>
+      <Button
+        id={`select-box-${id}`}
+        aria-haspopup="true"
+        aria-expanded={isOpen ? "true" : undefined}
+        aria-controls={`select-list-${id}`}
+        onClick={() => setIsOpen(true)}
+      >
+        {selectedValue?.label}
+      </Button>
       {isOpen && (
-        <ul>
+        <ul
+          aria-labelledby={`select-box-${id}`}
+          id={`select-list-${id}`}
+          role="listbox"
+        >
           <SelectProvider
             selectedValue={selectedValue}
             handleSelected={handleSelected}

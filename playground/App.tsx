@@ -4,18 +4,16 @@ import type { Option } from "../src/types/select";
 
 function App() {
   const [state, setState] = useState<Option | undefined>({
-    label: "hihi",
-    value: "hihi",
+    label: "label",
+    value: "value",
   });
 
   return (
     <div className="App">
       <Select
-        value={state}
         defaultValue={state}
         onSelect={(value) => {
-          console.log(value);
-          // setState(value);
+          setState(value);
         }}
       >
         <Select.Option value="ho">ho</Select.Option>
