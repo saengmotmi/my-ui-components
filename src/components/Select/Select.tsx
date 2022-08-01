@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useClickAway } from "react-use";
 import { v4 as uuid } from "uuid";
 
@@ -15,9 +15,12 @@ interface Props {
   children?: React.ReactNode;
 }
 
-const Select: React.FC<Props> & {
-  Option: typeof SelectOption;
-} = ({ value, defaultValue, onSelect, children }) => {
+const Select: React.FC<Props> & { Option: typeof SelectOption } = ({
+  value,
+  defaultValue,
+  onSelect,
+  children,
+}) => {
   const [id] = useState(() => uuid());
   const [selectedValue, setSelectedValue] = useControlled<Option | undefined>({
     controlled: value,
@@ -47,6 +50,7 @@ const Select: React.FC<Props> & {
       >
         {selectedValue?.label}
       </Button>
+      {/* visibility: hidden; <- 스크롤 등 상태를 유지해야 한다면 */}
       {isOpen && (
         <ul
           aria-labelledby={`select-box-${id}`}

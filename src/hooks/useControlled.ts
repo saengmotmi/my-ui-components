@@ -5,7 +5,10 @@ interface Props<T> {
   default?: T;
 }
 
-const useControlled = <T>({ controlled, default: defaultProp }: Props<T>) => {
+const useControlled = <T>({
+  controlled,
+  default: defaultProp,
+}: Props<T>): [T | undefined, (newValue: T) => void] => {
   // isControlled is ignored in the hook dependency lists as it should never change.
   const { current: isControlled } = useRef(controlled !== undefined);
   const [valueState, setValue] = useState(defaultProp);
@@ -17,10 +20,7 @@ const useControlled = <T>({ controlled, default: defaultProp }: Props<T>) => {
     }
   }, []);
 
-  return [value, setValueIfUncontrolled] as [
-    typeof value,
-    typeof setValueIfUncontrolled
-  ];
+  return [value, setValueIfUncontrolled];
 };
 
 export default useControlled;
